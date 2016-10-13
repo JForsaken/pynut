@@ -3,7 +3,7 @@
 import nltk
 from nltk import *
 
-with open ("exemple1.cfg", "r") as myfile:
+with open ("shaft.cfg", "r") as myfile:
     grammaireText=myfile.read()
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
