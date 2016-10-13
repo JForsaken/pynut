@@ -8,12 +8,13 @@ with open ("shaft.cfg", "r") as myfile:
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = nltk.ChartParser(grammar)
-tokens = "Jean tua Marie".split()
-
-
-parser = parse.FeatureEarleyChartParser(grammar)
-trees = parser.parse(tokens)
-for tree in trees:
-    print(tree)
-    nltk.draw.tree.draw_trees(tree)
-    print(tree.label()['SEM'])
+sentences = "Babe harcele Gitane. Babe harcele Gitane. Babe harcele Gitane. Babe harcele Gitane.".split('.')
+for sentence in sentences:
+    print(sentence)
+    tokens = sentence.split()
+    parser = parse.FeatureEarleyChartParser(grammar)
+    trees = parser.parse(tokens)
+    for tree in trees:
+        print(tree)
+        #nltk.draw.tree.draw_trees(tree)
+        #print(tree.label()['SEM'])
