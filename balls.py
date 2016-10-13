@@ -14,7 +14,7 @@ with open (paths.STORY_FILE, "r") as myfile:
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = nltk.ChartParser(grammar)
-sentences = textSource.split('.')
+sentences = textSource[:-1].split('.')
 for sentence in sentences:
     print(sentence)
     tokens = sentence.split()
