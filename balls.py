@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import paths
 import nltk
 from nltk import *
 
 # Grammar rules
-with open ("shaft.cfg", "r") as myfile:
+with open (paths.DICTIONNARY_FILE, "r") as myfile:
     grammaireText = myfile.read()
 
 # Text source
-with open ("jizz.txt", "r") as myfile:
+with open (paths.STORY_FILE, "r") as myfile:
     textSource = myfile.read()
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
