@@ -3,12 +3,17 @@
 import nltk
 from nltk import *
 
+# Grammar rules
 with open ("shaft.cfg", "r") as myfile:
-    grammaireText=myfile.read()
+    grammaireText = myfile.read()
+
+# Text source
+with open ("jizz.txt", "r") as myfile:
+    textSource = myfile.read()
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = nltk.ChartParser(grammar)
-sentences = "Babe harcele Gitane. Babe harcele Gitane. Babe harcele Gitane. Babe harcele Gitane.".split('.')
+sentences = textSource.split('.')
 for sentence in sentences:
     print(sentence)
     tokens = sentence.split()
