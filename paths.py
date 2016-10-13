@@ -1,2 +1,2 @@
-DICTIONNARY_FILE = "shaft.cfg";
+DICTIONARY_FILE = "shaft.cfg";
 STORY_FILE = "jizz.txt";

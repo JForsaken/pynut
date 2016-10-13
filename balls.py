@@ -5,7 +5,7 @@ import nltk
 from nltk import *
 
 # Grammar rules
-with open (paths.DICTIONNARY_FILE, "r") as myfile:
+with open (paths.DICTIONARY_FILE, "r") as myfile:
     grammaireText = myfile.read()
 
 # Text source
