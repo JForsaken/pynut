@@ -5,11 +5,6 @@ import sys
 import nltk
 from nltk import *
 
-
-
-def closeFile(file):
-    file.close()
-
 # Facts file
 with open (paths.FACTS_FILE, "w") as myfile:
     print("creating facts file ...")
