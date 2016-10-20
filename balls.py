@@ -1,8 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import paths
+import sys
 import nltk
 from nltk import *
+
+
+
+def closeFile(file):
+    file.close()
+
+# Facts file
+with open (paths.FACTS_FILE, "w") as myfile:
+    print("creating facts file ...")
+    factsFile = myfile
 
 # Grammar rules
 with open (paths.DICTIONARY_FILE, "r") as myfile:
@@ -15,6 +26,7 @@ with open (paths.STORY_FILE, "r") as myfile:
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = nltk.ChartParser(grammar)
 sentences = textSource[:-1].split('.')
+
 for sentence in sentences:
     print(sentence)
     tokens = sentence.split()
@@ -24,3 +36,5 @@ for sentence in sentences:
         print(tree)
         #nltk.draw.tree.draw_trees(tree)
         #print(tree.label()['SEM'])
+
+factsFile.close();
