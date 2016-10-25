@@ -21,6 +21,4 @@ for sentence in sentences:
     parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
     for tree in trees:
-        print(tree)
-        #nltk.draw.tree.draw_trees(tree)
-        #print(tree.label()['SEM'])
+        nltk.draw.tree.draw_trees(tree)
