@@ -30,6 +30,12 @@ def check(smegmantique, shouldExistList):
   
     return sentence[:-1] + ")"
 
+def destructure_sentence(sentence):
+    currentSentence = []
+    for node in sentence:
+        currentSentence.append((node[0], str(node[1]).split("'")[1]))
+
+    return currentSentence
 
 # Grammar rules
 with open (paths.DICTIONARY_FILE, "r") as myfile:
@@ -42,42 +48,21 @@ with open (paths.STORY_FILE, "r") as myfile:
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = nltk.ChartParser(grammar)
 sentences = textSource[:-1].split('.')
+sentenceTrace = []
+
 for sentence in sentences:
     print(sentence)
     tokens = sentence.split()
     parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
-    #print(trees[0].node['SEM'])
-    for tree in trees:
-     #   print(tree.label().node['SEM'])
-        #print(tree)
-        #nltk.draw.tree.draw_trees(tree)
+
+    for index, tree in enumerate(trees):
         smegmantique = str(tree.label()['SEM'])
         print(smegmantique)
         jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
         print(jess_rule)
-        #if ("possede" in smegmantique):
-        #   paramX = smegmantique.replace("possede", "")
-        #  paramX = paramX.replace("(", "")
-           # paramX = paramX.replace(")", "")
-            #paramX = paramX.split(',')
-            #personnage = paramX[0]
-            #objet = paramX[1]
-            #sentence = "(personnage " + personnage + " possede objet " + objet + ")"
-            #print(sentence)
-                #if (semantique.find("poseede") == 0):
-        #print(smegmantique.parse())
-        #print(type(semantique))
-        #semantiques = "possede slut sale"
-        #boolean = "possede" in semantiques
-        #print(boolean)
-        #print(semantique)
 
-        #for bleh in tree:
-         #   print(bleh)
-        #for bleh in tree:
-         #   for ee in bleh:
-          #      for ff in ee:
-                    #print(ff)
-
-
+        print(tree)
+        if index == 0:
+            sentenceTrace.append(destructure_sentence(tree.pos()))
+print(sentenceTrace)
