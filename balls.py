@@ -57,6 +57,7 @@ for sentence in sentences:
     trees = parser.parse(tokens)
 
     for index, tree in enumerate(trees):
+        nltk.draw.tree.draw_trees(tree)
         smegmantique = str(tree.label()['SEM'])
         print(smegmantique)
         jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
@@ -65,4 +66,5 @@ for sentence in sentences:
         print(tree)
         if index == 0:
             sentenceTrace.append(destructure_sentence(tree.pos()))
+
 print(sentenceTrace)
