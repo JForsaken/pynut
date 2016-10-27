@@ -5,6 +5,39 @@ import sys
 import nltk
 from nltk import *
 
+class Smegment:
+    def __init__(self, tag, text):
+        self.tag = tag
+        self.text = text
+
+def getParams(string, shouldExistList):
+    print(shouldExistList)
+    for existString in shouldExistList:
+        string = string.replace(existString.text, "")
+
+    return string.split(',')
+
+def check(smegmantique, shouldExistList):
+    sentence = "("
+    for removeString in ['(', ')']:
+        smegmantique = smegmantique.replace(removeString, "")
+
+    params = getParams(smegmantique, shouldExistList)
+    for i, smegment in enumerate(shouldExistList):
+        if smegment.tag == 'man' and smegment.text not in smegmantique:
+            return -1
+
+        sentence += smegment.text + ' ' + params[i] + ' '
+
+    return sentence[:-1] + ")"
+
+def destructure_sentence(sentence):
+    currentSentence = []
+    for node in sentence:
+        currentSentence.append((node[0], str(node[1]).split("'")[1]))
+
+    return currentSentence
+
 # Grammar rules
 with open (paths.DICTIONARY_FILE, "r") as myfile:
     grammaireText = myfile.read()
@@ -31,14 +64,21 @@ fo = open(paths.FACTS_FILE, "w")
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = nltk.ChartParser(grammar)
 sentences = textSource[:-1].split('.')
+sentenceTrace = []
 
-for i, sentence in enumerate(sentences):
-    print("\n",i + 1,". ",sentence)
+for sentence in sentences:
+    print(sentence)
     tokens = sentence.split()
     parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
 
-    for tree in trees:
-        process_fact(fo, "fact")
+    for index, tree in enumerate(trees):
+        smegmantique = str(tree.label()['SEM'])
+        print(smegmantique)
+        jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
+        print(jess_rule)
 
-fo.close();
+        print(tree)
+        if index == 0:
+            sentenceTrace.append(destructure_sentence(tree.pos()))
+print(sentenceTrace)
