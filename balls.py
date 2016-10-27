@@ -4,6 +4,31 @@ import paths
 import nltk
 from nltk import *
 
+class Smegment:
+    def __init__(self, tag, text):
+        self.tag = tag
+        self.text = text
+
+def getParams(string, shouldExistList):
+    print(shouldExistList)
+    for existString in shouldExistList:
+        string = string.replace(existString.text, "")
+
+    return string.split(',')
+
+def check(smegmantique, shouldExistList):
+    sentence = "("
+    for removeString in ['(', ')']:
+        smegmantique = smegmantique.replace(removeString, "")
+
+    params = getParams(smegmantique, shouldExistList)
+    for i, smegment in enumerate(shouldExistList):
+        if smegment.tag == 'man' and smegment.text not in smegmantique:
+            return -1
+
+        sentence += smegment.text + ' ' + params[i] + ' '
+  
+    return sentence[:-1] + ")"
 
 def destructure_sentence(sentence):
     currentSentence = []
@@ -11,7 +36,6 @@ def destructure_sentence(sentence):
         currentSentence.append((node[0], str(node[1]).split("'")[1]))
 
     return currentSentence
-
 
 # Grammar rules
 with open (paths.DICTIONARY_FILE, "r") as myfile:
@@ -31,11 +55,14 @@ for sentence in sentences:
     tokens = sentence.split()
     parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
+
     for index, tree in enumerate(trees):
+        smegmantique = str(tree.label()['SEM'])
+        print(smegmantique)
+        jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
+        print(jess_rule)
+
         print(tree)
         if index == 0:
             sentenceTrace.append(destructure_sentence(tree.pos()))
-        #nltk.draw.tree.draw_trees(tree)
-        #print(tree.label()['SEM'])
-
 print(sentenceTrace)
