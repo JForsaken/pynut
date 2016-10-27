@@ -38,6 +38,16 @@ def destructure_sentence(sentence):
 
     return currentSentence
 
+def print_header():
+    print("\n")
+    print("==================")
+    print("=== Traitement ===")
+    print("==================")
+
+def process_fact(file, fact):
+    print(fact)
+    file.write(fact + "\n")
+
 # Grammar rules
 with open (paths.DICTIONARY_FILE, "r") as myfile:
     grammaireText = myfile.read()
@@ -46,28 +56,19 @@ with open (paths.DICTIONARY_FILE, "r") as myfile:
 with open (paths.STORY_FILE, "r") as myfile:
     textSource = myfile.read()
 
-def print_header():
-    print("\n")
-    print("==================")
-    print("=== Traitement ===")
-    print("==================")
-
-def process_fact(file, fact):
-    print('fact')
-    fo.write('Fact')
-
 print_header()
-
-# New fact file
 fo = open(paths.FACTS_FILE, "w")
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = nltk.ChartParser(grammar)
-sentences = textSource[:-1].split('.')
+sentences = textSource.split('.')
 sentenceTrace = []
 
 for sentence in sentences:
     print(sentence)
+
+    fo.write(sentence + "\n")
+
     tokens = sentence.split()
     parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
@@ -76,9 +77,11 @@ for sentence in sentences:
         smegmantique = str(tree.label()['SEM'])
         print(smegmantique)
         jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
-        print(jess_rule)
+        print("ok")
+        process_fact(fo, jess_rule)
 
         print(tree)
         if index == 0:
             sentenceTrace.append(destructure_sentence(tree.pos()))
+
 print(sentenceTrace)
