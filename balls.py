@@ -10,7 +10,6 @@ class Smegment:
         self.text = text
 
 def getParams(string, shouldExistList):
-    print(shouldExistList)
     for existString in shouldExistList:
         string = string.replace(existString.text, "")
 
@@ -51,20 +50,24 @@ sentences = textSource[:-1].split('.')
 sentenceTrace = []
 
 for sentence in sentences:
-    print(sentence)
+    #print(sentence)
     tokens = sentence.split()
     parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
-
+    #nltk.draw.tree.draw_trees(tree)
     for index, tree in enumerate(trees):
-        nltk.draw.tree.draw_trees(tree)
+        
         smegmantique = str(tree.label()['SEM'])
-        print(smegmantique)
+        #print(smegmantique)
+
+        #Check all the rules
         jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
         print(jess_rule)
+        jess_rule = check(smegmantique, [Smegment('opt', 'cours'), Smegment('man', 'apprend')])
+        print(jess_rule)
 
-        print(tree)
+        #print(tree)
         if index == 0:
             sentenceTrace.append(destructure_sentence(tree.pos()))
 
-print(sentenceTrace)
+#print(sentenceTrace)
