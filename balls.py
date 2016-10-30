@@ -2,7 +2,6 @@
 
 import paths
 from filehandler import FileHandler
-import sys
 import nltk
 from nltk import *
 
