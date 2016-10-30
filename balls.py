@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import paths
+from filehandler import FileHandler
 import sys
 import nltk
 from nltk import *
@@ -11,7 +12,7 @@ class Smegment:
         self.text = text
 
 def getParams(string, shouldExistList):
-    print(shouldExistList)
+    #print(shouldExistList)
     for existString in shouldExistList:
         string = string.replace(existString.text, "")
 
@@ -38,51 +39,39 @@ def destructure_sentence(sentence):
 
     return currentSentence
 
-def print_header():
-    print("\n")
-    print("==================")
-    print("=== Traitement ===")
-    print("==================")
-
-def process_fact(file, fact):
-    print(fact)
-    file.write(fact + "\n")
+def check_rules(fileHandler, smegmantique):
+    jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
+    fileHandler.write(jess_rule)
+    jess_rule = check(smegmantique, [Smegment('opt', 'cours'), Smegment('man', 'apprend')])
+    fileHandler.write(jess_rule)
 
 # Grammar rules
-with open (paths.DICTIONARY_FILE, "r") as myfile:
+with open (paths.DICTIONARY_FILE_PATH, "r") as myfile:
     grammaireText = myfile.read()
 
 # Text source
-with open (paths.STORY_FILE, "r") as myfile:
+with open (paths.STORY_FILE_PATH, "r") as myfile:
     textSource = myfile.read()
 
-print_header()
-fo = open(paths.FACTS_FILE, "w")
+fileHandler = FileHandler(paths.FACTS_FILE_PATH)
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
-parser = nltk.ChartParser(grammar)
+parser = parse.FeatureEarleyChartParser(grammar)
 sentences = textSource.split('.')
 sentenceTrace = []
 
 for sentence in sentences:
-    print(sentence)
-
-    fo.write(sentence + "\n")
-
+    fileHandler.write(sentence)
     tokens = sentence.split()
-    parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
+    #nltk.draw.tree.draw_trees(tree)
 
     for index, tree in enumerate(trees):
-        nltk.draw.tree.draw_trees(tree)
-        smegmantique = str(tree.label()['SEM'])
-        print(smegmantique)
-        jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
-        print("ok")
-        process_fact(fo, jess_rule)
+        check_rules(fileHandler, str(tree.label()['SEM']))
+        #print(tree)
 
-        print(tree)
         if index == 0:
             sentenceTrace.append(destructure_sentence(tree.pos()))
 
-print(sentenceTrace)
+fileHandler.dispose()
+#print(sentenceTrace)

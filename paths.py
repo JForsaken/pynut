@@ -1,3 +1,3 @@
-DICTIONARY_FILE = "shaft.cfg";
-STORY_FILE = "jizz.txt";
-FACTS_FILE = "facts.txt"
+DICTIONARY_FILE_PATH = "shaft.cfg";
+STORY_FILE_PATH = "jizz.txt";
+FACTS_FILE_PATH = "facts.txt"
