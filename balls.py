@@ -62,16 +62,13 @@ sentences = textSource.split('.')
 sentenceTrace = []
 
 for sentence in sentences:
-    fileHandler.write(sentence)
     tokens = sentence.split()
     trees = parser.parse(tokens)
     nltk.draw.tree.draw_trees(tree)
     for index, tree in enumerate(trees):
         check_rules(fileHandler, str(tree.label()['SEM']))
-        #print(tree)
 
         if index == 0:
             sentenceTrace.append(destructure_sentence(tree.pos()))
 
 fileHandler.dispose()
-#print(sentenceTrace)
