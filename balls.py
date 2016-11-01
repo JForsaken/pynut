@@ -54,7 +54,7 @@ for sentence in sentences:
     tokens = sentence.split()
     parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
-    #nltk.draw.tree.draw_trees(tree)
+    nltk.draw.tree.draw_trees(tree)
     for index, tree in enumerate(trees):
         
         smegmantique = str(tree.label()['SEM'])
@@ -62,9 +62,7 @@ for sentence in sentences:
 
         #Check all the rules
         jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
-        print(jess_rule)
         jess_rule = check(smegmantique, [Smegment('opt', 'cours'), Smegment('man', 'apprend')])
-        print(jess_rule)
 
         #print(tree)
         if index == 0:
