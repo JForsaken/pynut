@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import paths
+from filehandler import FileHandler
 import nltk
 from nltk import *
 
@@ -26,7 +27,7 @@ def check(smegmantique, shouldExistList):
             return -1
 
         sentence += smegment.text + ' ' + params[i] + ' '
-  
+
     return sentence[:-1] + ")"
 
 def destructure_sentence(sentence):
@@ -36,36 +37,41 @@ def destructure_sentence(sentence):
 
     return currentSentence
 
+def check_rules(fileHandler, smegmantique):
+    jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
+    if jess_rule != -1:
+      fileHandler.write(jess_rule)
+
+    jess_rule = check(smegmantique, [Smegment('opt', 'cours'), Smegment('man', 'apprend')])
+    if jess_rule != -1:
+      fileHandler.write(jess_rule)
+
 # Grammar rules
-with open (paths.DICTIONARY_FILE, "r") as myfile:
+with open (paths.DICTIONARY_FILE_PATH, "r") as myfile:
     grammaireText = myfile.read()
 
 # Text source
-with open (paths.STORY_FILE, "r") as myfile:
+with open (paths.STORY_FILE_PATH, "r") as myfile:
     textSource = myfile.read()
 
+fileHandler = FileHandler(paths.FACTS_FILE_PATH)
+
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
-parser = nltk.ChartParser(grammar)
-sentences = textSource[:-1].split('.')
+parser = parse.FeatureEarleyChartParser(grammar)
+sentences = textSource.split('.')
 sentenceTrace = []
 
 for sentence in sentences:
-    #print(sentence)
+    fileHandler.write(sentence)
     tokens = sentence.split()
-    parser = parse.FeatureEarleyChartParser(grammar)
     trees = parser.parse(tokens)
     nltk.draw.tree.draw_trees(tree)
     for index, tree in enumerate(trees):
-        
-        smegmantique = str(tree.label()['SEM'])
-        #print(smegmantique)
-
-        #Check all the rules
-        jess_rule = check(smegmantique, [Smegment('opt', 'personnage'), Smegment('man', 'possede')])
-        jess_rule = check(smegmantique, [Smegment('opt', 'cours'), Smegment('man', 'apprend')])
-
+        check_rules(fileHandler, str(tree.label()['SEM']))
         #print(tree)
+
         if index == 0:
             sentenceTrace.append(destructure_sentence(tree.pos()))
 
+fileHandler.dispose()
 #print(sentenceTrace)
