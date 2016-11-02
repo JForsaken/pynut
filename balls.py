@@ -5,6 +5,8 @@ from filehandler import FileHandler
 import nltk
 from nltk import *
 
+should_draw_tree = False
+
 class Smegment:
     def __init__(self, tag, text):
         self.tag = tag
@@ -96,7 +98,9 @@ sentences = sentence_parser(sentences)
 for sentence in sentences:
     tokens = sentence.split()
     trees = parser.parse(tokens)
-    nltk.draw.tree.draw_trees(tree)
+    if should_draw_tree:
+      nltk.draw.tree.draw_trees(tree)
+
     for index, tree in enumerate(trees):
         check_rules(fileHandler, str(tree.label()["SEM"]))
 
