@@ -79,7 +79,7 @@ def check_rules(fileHandler, smegmantique, sentence):
       fileHandler.write(jess_rule)
 
     if found == False:
-      print('No rules could be created from this sentence: ' + sentence)
+      print('No rules could be created from sentence: ' + sentence + '\n     and semantic: ' + smegmantique)
 
 def sentence_parser(sentences):
     curSentences = list(sentences)
