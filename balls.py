@@ -8,9 +8,10 @@ from nltk import *
 should_draw_tree = False
 
 class Smegment:
-    def __init__(self, tag, text):
+    def __init__(self, tag, text, attach):
         self.tag = tag
         self.text = text
+        self.attach = attach
 
 def getParams(string, shouldExistList):
     for existString in shouldExistList:
@@ -18,21 +19,23 @@ def getParams(string, shouldExistList):
 
     return string.split(",")
 
-
-def check(smegmantique, shouldExistList):
+def check(smegmantique, shouldExistList, shouldRemoveList):
     sentence = "("
-    for removeString in ["(", ")"]:
+    filterList = ["(", ")"] + shouldRemoveList
+    for removeString in filterList:
         smegmantique = smegmantique.replace(removeString, "")
-
+    
     params = getParams(smegmantique, shouldExistList)
     for i, smegment in enumerate(shouldExistList):
         if smegment.tag == 'man' and smegment.text not in smegmantique:
             return -1
 
+        
         sentence += smegment.text + ' ' + params[i] + ' '
+        if smegment.attach != "":
+          sentence += smegment.attach + ' '
 
     return sentence[:-1] + ")"
-
 
 def destructure_sentence(sentence):
     currentSentence = []
@@ -48,16 +51,35 @@ def destructure_sentence(sentence):
 
     return currentSentence
 
-
-def check_rules(fileHandler, smegmantique):
-    jess_rule = check(smegmantique, [Smegment("opt", "personnage"), Smegment("man", "possede")])
+def check_rules(fileHandler, smegmantique, sentence):
+    found = False
+    jess_rule = check(smegmantique, [Smegment("opt", "personnage", ""), Smegment("man", "possède", "")], [])
     if jess_rule != -1:
+      found = True
       fileHandler.write(jess_rule)
 
-    jess_rule = check(smegmantique, [Smegment("opt", "cours"), Smegment("man", "apprend")])
+    jess_rule = check(smegmantique, [Smegment("opt", "cours", ""), Smegment("man", "apprend", "")], [])
     if jess_rule != -1:
+      found = True
       fileHandler.write(jess_rule)
 
+    jess_rule = check(smegmantique, [Smegment("opt", "personnage", ""), Smegment("man", "at", "")], ['cours'])
+    if jess_rule != -1:
+      found = True
+      fileHandler.write(jess_rule)
+
+    jess_rule = check(smegmantique, [Smegment("opt", "personnage", "a"), Smegment("man", "vu", "")], [])
+    if jess_rule != -1:
+      found = True
+      fileHandler.write(jess_rule)
+
+    jess_rule = check(smegmantique, [Smegment("opt", "personnage", ""), Smegment("man", "is", "")], [])
+    if jess_rule != -1:
+      found = True
+      fileHandler.write(jess_rule)
+
+    if found == False:
+      print('No rules could be created from this sentence: ' + sentence)
 
 def sentence_parser(sentences):
     curSentences = list(sentences)
@@ -79,7 +101,6 @@ def sentence_parser(sentences):
                         curSentences[sentenceIndex] = sentence.replace(word, lastSubject)
     return curSentences
 
-
 # Grammar rules
 with open (paths.DICTIONARY_FILE_PATH, "r") as myfile:
     grammaireText = myfile.read()
@@ -92,16 +113,19 @@ fileHandler = FileHandler(paths.FACTS_FILE_PATH)
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = parse.FeatureEarleyChartParser(grammar)
+textSource = textSource.replace(" et ", ".")
+print(textSource)
 sentences = textSource.split(".")[:-1] #removes last item from list, an empty string because of last split
 sentences = sentence_parser(sentences)
 
 for sentence in sentences:
     tokens = sentence.split()
     trees = parser.parse(tokens)
-    if should_draw_tree:
-      nltk.draw.tree.draw_trees(tree)
-
+    
     for index, tree in enumerate(trees):
-        check_rules(fileHandler, str(tree.label()["SEM"]))
+      if should_draw_tree:
+        nltk.draw.tree.draw_trees(tree)
+
+      check_rules(fileHandler, str(tree.label()["SEM"]), sentence)
 
 fileHandler.dispose()
