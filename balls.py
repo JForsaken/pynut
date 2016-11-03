@@ -125,7 +125,7 @@ fileHandler = FileHandler(paths.FACTS_FILE_PATH)
 
 grammar = grammar.FeatureGrammar.fromstring(grammaireText)
 parser = parse.FeatureEarleyChartParser(grammar)
-textSource = textSource.replace(" et ", ".")
+textSource = textSource.replace(" et ", ". ")
 jessRules = []
 
 print(textSource)
